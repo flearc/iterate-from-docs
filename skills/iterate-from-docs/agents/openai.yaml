@@ -1,0 +1,4 @@
+interface:
+  display_name: "Iterate from Docs"
+  short_description: "Ship fast without code or documentation drift"
+  default_prompt: "Use $iterate-from-docs to plan and execute this change while keeping code, tests, decisions, and documentation aligned."
