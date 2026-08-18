@@ -5,6 +5,7 @@ Read only the template needed for the current task. Keep working briefs outside 
 ## Contents
 
 - [Authority map](#authority-map)
+- [Instruction scope map](#instruction-scope-map)
 - [Iteration brief](#iteration-brief)
 - [Decision record](#decision-record)
 - [Removal ledger](#removal-ledger)
@@ -28,6 +29,19 @@ Read only the template needed for the current task. Keep working briefs outside 
 - Superseded surface: <code/tests/docs/config to remove>
 - Stop condition: <observable acceptance and focused checks>
 ```
+
+## Instruction scope map
+
+Create one row per distinct instruction chain. Group paths only when every instruction owner is identical. Add separate source and destination rows for moves.
+
+```markdown
+| Target paths | Instruction chain, root to leaf | Most-specific constraints | Classification |
+|---|---|---|---|
+| <paths sharing one chain> | <root instructions> → <subtree instructions> | <local additions or narrowing> | authoritative |
+| <fixture or generated path> | <governing outer chain> | <rules for editing the artifact> | fixture data / generated / authoritative |
+```
+
+Record unresolved contradictions below the table instead of silently choosing one rule. Omit this artifact for a small change whose targets all share one obvious chain.
 
 ## Iteration brief
 
