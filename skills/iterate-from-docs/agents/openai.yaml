@@ -1,4 +1,4 @@
 interface:
   display_name: "Iterate from Docs"
-  short_description: "Ship fast without code or documentation drift"
-  default_prompt: "Use $iterate-from-docs to plan and execute this change while keeping code, tests, decisions, and documentation aligned."
+  short_description: "Reach the goal fast without drift or repository bloat"
+  default_prompt: "Use $iterate-from-docs to achieve this change's observable goal while keeping architecture, code, evidence, decisions, and documentation aligned and removing obsolete surfaces."
