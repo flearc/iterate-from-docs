@@ -8,11 +8,13 @@ The workflow was distilled from the documentation system and Git history of [Dee
 
 - Read the narrow chain of instructions, architecture, component docs, and relevant Git history.
 - Resolve root-to-leaf instruction overlays separately for every affected path.
+- Adopt incrementally in long-lived projects by distinguishing obligations, current intent, observed behavior, history, and unresolved conflicts.
+- Optimize for the observable goal rather than blindly preserving a suggested implementation.
 - Give every durable fact one owner and link instead of copying.
-- Lock an observable iteration outcome, non-goals, owners, deletion scope, and evidence before editing.
+- Lock user value, observable acceptance, quality obligations, owners, deletion scope, and evidence before editing.
 - Update code, tests, docs, decisions, generated artifacts, and removals as one coherent change.
 - Delete duplicate paths, unsupported surfaces, speculative abstractions, stale tests, and unnecessary compatibility code.
-- Validate through the real entry path with the smallest evidence set that can catch the regression.
+- Validate complete obligations through real entry paths while running the smallest focused command set that can catch the regression.
 
 ## Repository layout
 

@@ -6,6 +6,7 @@ Read only the template needed for the current task. Keep working briefs outside 
 
 - [Authority map](#authority-map)
 - [Instruction scope map](#instruction-scope-map)
+- [Brownfield baseline](#brownfield-baseline)
 - [Iteration brief](#iteration-brief)
 - [Decision record](#decision-record)
 - [Removal ledger](#removal-ledger)
@@ -18,6 +19,8 @@ Read only the template needed for the current task. Keep working briefs outside 
 # Authority map: <change>
 
 - Outcome: <observable result>
+- User value: <why this result matters>
+- Required behavior versus suggested mechanism: <separate them>
 - Non-goals: <behavior intentionally unchanged>
 - Source owner: <component/path>
 - Extension point or ownership change: <mechanism>
@@ -43,6 +46,22 @@ Create one row per distinct instruction chain. Group paths only when every instr
 
 Record unresolved contradictions below the table instead of silently choosing one rule. Omit this artifact for a small change whose targets all share one obvious chain.
 
+## Brownfield baseline
+
+Use this only for the affected scope of a long-lived project. Do not turn it into a repository-wide inventory.
+
+```markdown
+| Claim or behavior | Evidence | Authority class | Consumer/obligation | Action |
+|---|---|---|---|---|
+| <public promise or format> | <source/link/reproduction> | obligation | <named consumer/policy> | preserve/migrate/change explicitly |
+| <maintained intended behavior> | <architecture/contract/decision> | current intent | <owner> | align implementation and docs |
+| <reproducible behavior> | <real entry observation> | observed behavior | <consumer or none> | preserve/fix/remove after judgment |
+| <old test/comment/commit> | <path/commit> | historical clue | <none/current relevance> | use as rationale, not authority |
+| <conflicting claims> | <both owners> | unresolved conflict | <affected outcome> | resolve or request direction |
+```
+
+Record the compatibility policy, release status, and real consumers for the slice below the table. End adoption when the current change has trustworthy owners and evidence; leave unrelated debt alone.
+
 ## Iteration brief
 
 ```markdown
@@ -52,11 +71,18 @@ Record unresolved contradictions below the table instead of silently choosing on
 
 <One externally observable outcome.>
 
+## User value and mechanism
+
+- Value: <why the outcome matters>
+- Required behavior: <must hold>
+- Suggested mechanism: <binding constraint, preferred approach, or replaceable idea>
+
 ## Constraints
 
 - <Invariant or compatibility promise>
 - <Documented architecture rule>
 - <Security, durability, lifecycle, or platform constraint>
+- <Compatibility or migration obligation>
 
 ## Non-goals
 
@@ -73,6 +99,7 @@ Record unresolved contradictions below the table instead of silently choosing on
 
 - Local semantics: <focused test>
 - Assembled behavior: <real-entry test or snapshot>
+- Proof strength: <regression that makes each selected check fail>
 - Static/documentation: <relevant checks>
 
 ## Done

@@ -42,6 +42,20 @@ def parse_frontmatter(text: str, errors: list[str]) -> dict[str, str]:
     return fields
 
 
+def markdown_anchors(text: str) -> set[str]:
+    """Return GitHub-style anchors for the simple headings used by this skill."""
+    anchors: set[str] = set()
+    counts: dict[str, int] = {}
+    for heading in re.findall(r"^#{1,6}\s+(.+?)\s*$", text, re.MULTILINE):
+        anchor = heading.lower().strip()
+        anchor = re.sub(r"[^\w\- ]", "", anchor, flags=re.UNICODE)
+        anchor = re.sub(r"\s+", "-", anchor)
+        count = counts.get(anchor, 0)
+        counts[anchor] = count + 1
+        anchors.add(anchor if count == 0 else f"{anchor}-{count}")
+    return anchors
+
+
 def validate() -> list[str]:
     """Return every structural validation failure."""
     errors: list[str] = []
@@ -67,7 +81,8 @@ def validate() -> list[str]:
     for target in re.findall(r"\[[^\]]+\]\(([^)]+)\)", skill_text):
         if target.startswith(("http://", "https://", "#")):
             continue
-        resolved = (SKILL_DIR / target.split("#", 1)[0]).resolve()
+        path, separator, fragment = target.partition("#")
+        resolved = (SKILL_DIR / path).resolve()
         try:
             resolved.relative_to(SKILL_DIR.resolve())
         except ValueError:
@@ -75,6 +90,11 @@ def validate() -> list[str]:
             continue
         if not resolved.exists():
             fail(errors, f"broken skill link: {target}")
+            continue
+        if separator and fragment:
+            target_anchors = markdown_anchors(resolved.read_text(encoding="utf-8"))
+            if fragment not in target_anchors:
+                fail(errors, f"broken skill link anchor: {target}")
 
     metadata = METADATA_FILE.read_text(encoding="utf-8")
     if "$$" + EXPECTED_NAME in metadata:

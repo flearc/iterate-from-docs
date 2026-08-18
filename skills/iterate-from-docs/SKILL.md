@@ -1,6 +1,6 @@
 ---
 name: iterate-from-docs
-description: Keep an existing codebase aligned during fast iteration by deriving changes from current documentation and Git evidence, assigning each fact one owner, updating code, tests, decisions, and docs together, deleting superseded surfaces, and selecting focused validation. Use when planning, implementing, reviewing, or cleaning up non-trivial features, fixes, refactors, removals, architecture changes, or documentation-heavy work where drift, speculative abstractions, stale docs, duplicate paths, dead compatibility code, or test and documentation bloat are risks.
+description: Guide fast, goal-driven iteration in new or long-lived codebases by reconciling scoped instructions, current docs, runtime behavior, consumers, and Git evidence; assigning each fact and lifecycle one owner; proving changes through real entry paths; and deleting superseded code, tests, compatibility paths, and documents. Use for non-trivial features, fixes, refactors, removals, architecture changes, brownfield adoption, or documentation-heavy work where drift, stale authority, speculative abstractions, incomplete validation, or repository bloat are risks.
 ---
 
 # Iterate from Docs
@@ -8,6 +8,8 @@ description: Keep an existing codebase aligned during fast iteration by deriving
 Use documentation as a compact constraint system, not an implementation diary. Treat current code and tests as evidence of behavior, current docs as the intended system and public obligations, and Git history as evidence for why those choices exist. Reconcile conflicts explicitly; never let one source silently override the others.
 
 Keep this workflow proportional to the change. It is guidance, not a demand to create every document type or run every check. Reuse the repository's existing structure and tools before adding process.
+
+Optimize for the requested outcome, not the requested implementation. Translate the request into an observable state and preserve the user's proposed mechanism as a constraint only when it is explicit, required, or still the best fit after reading the owners. If the mechanism conflicts with a stronger architecture, security, compatibility, or product obligation, report the conflict and propose the narrowest outcome-preserving alternative.
 
 ## Follow the narrow reading path
 
@@ -54,11 +56,36 @@ Use Git to answer questions that current prose cannot:
 
 Treat commit messages as leads, then verify the diff and current owner. Do not preserve behavior only because old code once implemented it.
 
+## Establish trust in a long-lived project
+
+Do not require a mature repository to become globally consistent before making progress. Verify the scope affected by the requested change and make that scope internally consistent.
+
+Classify relevant evidence before treating it as authority:
+
+- **Obligation:** public API, released format, security rule, named external consumer, or explicit compatibility policy.
+- **Current intent:** maintained architecture, component contract, active decision, or instruction that agrees with shipped behavior.
+- **Observed behavior:** reproducible runtime behavior or a real consumer, which may be intentional or accidental.
+- **Historical clue:** old decision, test, comment, commit, or archived doc that explains a choice but does not govern current behavior.
+- **Unresolved conflict:** sources disagree and changing either side could alter a meaningful outcome.
+
+For the affected scope, map real consumers and reproduce the real entry path before normalizing docs or code. Preserve obligations; reconcile current intent with observed behavior; use history to explain rather than govern. Do not declare code authoritative merely because it runs, or docs authoritative merely because they exist.
+
+Adopt the workflow incrementally:
+
+1. Apply it to one real change, not a repository-wide documentation rewrite.
+2. Give only the affected facts clear owners and remove duplication created or exposed by the change.
+3. Make new and changed surfaces meet the current quality bar; record unrelated debt in the project's existing tracker only when it has an owner and value.
+4. Preserve compatibility until named consumers, release policy, and migration cost have been evaluated. Do not copy a pre-release clean-break policy into a released project.
+5. Apply the same standard to additional areas when later changes reach them. Add a standing rule or gate only after repeated evidence shows it prevents a real class of drift.
+
+Use the Brownfield Baseline in [references/templates.md](references/templates.md#brownfield-baseline) when documentation is stale, ownership is unclear, or the repository has several historical paths for the same behavior.
+
 ## Build an authority map
 
 Before editing, identify:
 
 - the observable outcome and explicit non-goals;
+- the user value and externally visible acceptance, independent of the proposed implementation;
 - the component that owns the behavior;
 - the documented extension point or reason the owner itself must change;
 - the public, model-visible, durable, wire, configuration, or security effects;
@@ -89,20 +116,27 @@ Use the classification to choose documentation and evidence, not to rename an or
 
 Define the slice before editing:
 
-1. State one observable outcome.
-2. State what remains unchanged.
-3. Name the authoritative code and docs.
-4. Name the extension point or ownership change.
-5. List the old surface to remove or the reason none exists.
-6. Select evidence for the changed behavior.
-7. Set a stop condition: the outcome works through the real entry path, stale references are absent, and focused checks pass.
+1. State the user or system outcome in terms observable outside the changed component.
+2. Separate required behavior from the suggested mechanism.
+3. State what remains unchanged, including compatibility, failure, security, lifecycle, and platform obligations that apply.
+4. Name the authoritative code, docs, and real consumers.
+5. Name the extension point or ownership change.
+6. List the old surface to remove or the reason none exists.
+7. Select evidence for the changed behavior and the regression that must make each check fail.
+8. Set a stop condition: the outcome works through the real entry path, applicable obligations hold, stale references are absent, and focused checks pass.
 
 Prefer a complete vertical slice over several speculative layers. Do not add a generic interface, adapter, package, option, or extension hook without a present consumer or a documented independent-evolution need.
+
+Review the contract across the dimensions the change can affect: successful behavior, failures, ownership and teardown, security and trust, compatibility and migration, persistence or replay, user/model experience, operations, and supported platforms. Omit irrelevant dimensions; do not omit a relevant one because the happy path passes.
 
 ## Keep architecture explicit
 
 - Extend through a documented extension point. Avoid product-specific branches in a central loop or shared core.
 - Change the core only when the requested behavior changes its responsibility; update the architecture owner in the same change.
+- For a swappable capability, identify its definition, provider, and real consumer. Do not ship one role as a speculative seam; keep roles together unless they evolve independently.
+- Keep one owner for each operation's readiness, cancellation, settlement, rollback, disposal, and publication. Fold parallel flags and controllers unless they represent independent lifecycles.
+- Publish state only after its authoritative operation commits. Derive caches, projections, prompts, and UI from that source instead of maintaining mirrors.
+- Registries and subscriptions must return or expose disposal, and tests must observe that unloading removes their contributions.
 - Keep one owner for default resolution, validation, persistence, lifecycle, and presentation decisions. Make cross-component behavior explicit at the owning edge.
 - Validate parsed, queued, file, durable, process, network, model, and tool inputs at their untyped edges. Trust typed same-process values after validation.
 - Put deployment-varying choices in validated configuration. Do not hide tunables in constants or test hooks.
@@ -129,7 +163,11 @@ Adapt the repository's existing hierarchy; do not create a parallel documentatio
 
 Write the complete fact in its owner and link to it elsewhere. Keep essential local obligations at the point of use, but do not repeat architecture, rationale, catalogs, or history.
 
+Require every durable document to earn its maintenance cost. It must own a current obligation, reusable procedure, durable rationale, incident record, or generated reference that readers cannot obtain more reliably from another owner. Temporary analysis, implementation narration, review history, diff summaries, speculative inventories, and duplicate indexes do not qualify; keep them in the task, issue, pull request, or Git history and remove them when the change closes.
+
 Write durable docs in current-state language. Keep plans in proposed decisions; rewrite them as present-tense decisions after shipping. Keep commit and migration stories in Git, decision records, or postmortems. Avoid status annotations such as “implemented,” “temporary,” or “future” in standing docs.
+
+Retire documents deliberately. Update an active decision when the same choice moves; supersede rather than mutate it into a different choice; archive closed rationale only while it still prevents a plausible mistake; delete obsolete proposals and fully redundant records under repository policy. Never treat a frozen archive as current authority.
 
 Generate tables, graphs, API inventories, and catalogs from source when completeness matters. Add a freshness check so generated docs cannot drift. Do not hand-maintain a second index when tree navigation or search already provides discovery.
 
@@ -141,14 +179,18 @@ Update the owning behavior and its evidence together:
 
 1. Change the source owner or extension plugin.
 2. Update focused unit tests for local semantics and edge cases.
-3. Update assembled acceptance for user-visible, model-visible, protocol, lifecycle, or persistence behavior.
+3. Update assembled acceptance for user-visible, model-visible, protocol, lifecycle, or persistence behavior; cover definition, provider, and consumer when adding a capability.
 4. Update the owning README, reference, public docs, or JSDoc.
 5. Update or add the decision record when the rationale is non-trivial.
 6. Regenerate derivative docs and snapshots from their sources.
 7. Remove superseded code, exports, configuration, schemas, fixtures, tests, docs, and records.
 8. Search the whole eligible repository for stale names, paths, options, and claims.
 
+Implement from the owner outward: establish the authoritative state or operation first, then consumers, derived views, docs, and generated artifacts. For a risky gate or regression test, deliberately confirm that the intended defect makes the new evidence fail before relying on it; revert the defect immediately and do not retain mutation-only scaffolding.
+
 Do not defer obvious cleanup created by the current change. Do not broaden into unrelated cleanup whose correctness needs a separate decision or validation story.
+
+Keep independent outcomes and decisions in separate reviewable changes. Within a branch or dependent stack, amend the change that introduced a defect, stale reference, or unsupported abstraction before propagating it; do not preserve avoidable cleanup as a later commit. Never rewrite shared history without the repository's explicit workflow and remote-movement safeguards.
 
 ## Delete complete surfaces
 
@@ -197,22 +239,27 @@ Select the smallest evidence set that can fail for the intended regression:
 
 Verify the world, not a component's self-report: re-read the file, query the state, inspect emitted bytes, or run the published entry. Mock only expensive or nondeterministic edges; keep downstream behavior real.
 
-Run focused checks once after the change stabilizes. Let CI own exhaustive matrices unless the change is irreducibly repository-wide, the user requests a full rehearsal, or CI diagnosis requires it. Add a new permanent check only for a deterministic invariant worth enforcing; do not turn every review preference into CI.
+Separate evidence completeness from execution breadth. Plan every tier needed to prove the changed obligations, but run the smallest focused commands that exercise those tiers once the change stabilizes. Let CI own exhaustive matrices unless the change is irreducibly repository-wide, the user requests a full rehearsal, or CI diagnosis requires it. Add a new permanent check only for a deterministic invariant worth enforcing; prove it rejects an invalid case, and do not turn every review preference into CI.
 
 ## Review for drift and bloat
 
 Review the diff against the verified base and include every dirty worktree layer. Ask:
 
 - Does the observable outcome match the iteration contract?
+- Did the implementation solve the goal, or merely follow the suggested mechanism?
+- Were stale docs, accidental runtime behavior, and historical clues distinguished from obligations?
 - Does each changed fact have one current owner?
 - Is a special case entering a central component instead of an extension point?
-- Does any new abstraction, option, package, or document lack a current consumer?
+- Does any new abstraction, option, package, compatibility path, or document lack a current consumer or obligation?
+- Does each capability have a definition, provider, and real consumer?
+- Does each asynchronous operation have one lifecycle owner and a tested commit/disposal point?
 - Did the change leave two ways to perform the same task?
 - Did removal cover configuration, docs, tests, generated artifacts, and decisions?
 - Do tests reach the real entry path and observe external state?
 - Are docs describing current behavior rather than the change story?
 - Can a generated artifact or machine check replace a hand-maintained inventory?
 - Is new code or prose paying permanent maintenance cost for a temporary need?
+- Would reverting the intended regression make the selected evidence fail?
 
 Use additions and deletions as signals, not goals. A feature may grow the repository; a simplification should demonstrate reduced owned behavior or maintenance burden, not merely move code behind another wrapper.
 
@@ -225,4 +272,4 @@ Use additions and deletions as signals, not goals. A feature may grow the reposi
 - Report the outcome, owning docs and decisions updated, meaningful deletions, checks actually run, and genuine deferred risks.
 - Do not add a summary document that repeats the diff or decision record.
 
-End when the requested behavior works, its rationale and contract have current owners, obsolete surfaces are gone, and the narrow evidence passes.
+End when the intended outcome—not merely the requested edit—works through the real entry path, relevant quality obligations hold, its rationale and contract have current owners, obsolete surfaces are gone, and the narrow evidence passes.
