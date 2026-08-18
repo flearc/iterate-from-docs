@@ -7,6 +7,7 @@ The workflow was distilled from the documentation system and Git history of [Dee
 ## What it enforces
 
 - Read the narrow chain of instructions, architecture, component docs, and relevant Git history.
+- Resolve root-to-leaf instruction overlays separately for every affected path.
 - Give every durable fact one owner and link instead of copying.
 - Lock an observable iteration outcome, non-goals, owners, deletion scope, and evidence before editing.
 - Update code, tests, docs, decisions, generated artifacts, and removals as one coherent change.
