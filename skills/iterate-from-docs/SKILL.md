@@ -186,6 +186,8 @@ Update the owning behavior and its evidence together:
 7. Remove superseded code, exports, configuration, schemas, fixtures, tests, docs, and records.
 8. Search the whole eligible repository for stale names, paths, options, and claims.
 
+Add brief comments at key implementation points where intent, invariants, lifecycle, edge-case handling, or a non-obvious tradeoff would not be clear from the code alone. Write comments for the user and future maintainers: explain why the code exists or what must remain true, using the repository's established comment style. Do not narrate obvious syntax, duplicate owning documentation, or preserve temporary implementation history in comments.
+
 Implement from the owner outward: establish the authoritative state or operation first, then consumers, derived views, docs, and generated artifacts. For a risky gate or regression test, deliberately confirm that the intended defect makes the new evidence fail before relying on it; revert the defect immediately and do not retain mutation-only scaffolding.
 
 Do not defer obvious cleanup created by the current change. Do not broaden into unrelated cleanup whose correctness needs a separate decision or validation story.
@@ -257,6 +259,7 @@ Review the diff against the verified base and include every dirty worktree layer
 - Did removal cover configuration, docs, tests, generated artifacts, and decisions?
 - Do tests reach the real entry path and observe external state?
 - Are docs describing current behavior rather than the change story?
+- Do key non-obvious implementation points have concise comments that explain intent or invariants without restating the code?
 - Can a generated artifact or machine check replace a hand-maintained inventory?
 - Is new code or prose paying permanent maintenance cost for a temporary need?
 - Would reverting the intended regression make the selected evidence fail?
