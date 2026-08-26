@@ -23,6 +23,19 @@ Read only the chain that can constrain the requested change:
 
 Do not read the full documentation corpus by default. Search by component name, API, configuration key, event, error text, and distinctive phrases. Exclude vendored and generated trees unless the task changes their owners.
 
+## Follow dependency best practices
+
+When a change uses or modifies an open-source library, framework, SDK, build tool, or other external component, research its recommended usage before implementing. Apply this equally to dependencies already present in the project and dependencies introduced by the change.
+
+1. Identify the exact installed or resolved version, relevant configuration, and the project's existing integration pattern.
+2. Search the component's official, version-matched documentation first. Check its maintained examples, API reference, migration or upgrade guidance, and security guidance when relevant. Use release notes or source only to resolve gaps; treat blogs, snippets, and search summaries as leads rather than authority.
+3. Compare the official recommendation with repository instructions, supported runtime versions, architecture, compatibility obligations, and real consumers. Do not copy the newest syntax into a version that does not support it.
+4. Prefer the documented primary API, lifecycle, configuration, extension point, and error-handling pattern. Avoid deprecated APIs, internal modules, undocumented workarounds, and custom wrappers when the component already owns the required behavior.
+5. If project constraints require departing from the documented recommendation, preserve the required outcome and record the narrow reason in the appropriate code comment, owning document, or decision record. Do not silently normalize an intentional project-specific choice.
+6. Validate the integration through the project's real entry path and with checks recommended by the component when they are relevant and feasible.
+
+Keep research proportional to the touched surface: inspect every external component whose API or configuration the change relies on, not every dependency in the repository. Search again when the installed version, official guidance, or project constraint is uncertain or plausibly stale; do not rely on model memory for current library practice. Report the authoritative sources used when they materially shaped the implementation.
+
 ## Resolve instruction scope
 
 Compute the applicable instruction chain for every target path before judging or editing it. Support `AGENTS.md`, symlinked aliases, and repository-specific instruction filenames already established by the project; do not invent a parallel instruction mechanism.
@@ -259,6 +272,7 @@ Review the diff against the verified base and include every dirty worktree layer
 - Did removal cover configuration, docs, tests, generated artifacts, and decisions?
 - Do tests reach the real entry path and observe external state?
 - Are docs describing current behavior rather than the change story?
+- Does each touched external component follow current, version-matched official guidance, or have a documented reason to diverge?
 - Do key non-obvious implementation points have concise comments that explain intent or invariants without restating the code?
 - Can a generated artifact or machine check replace a hand-maintained inventory?
 - Is new code or prose paying permanent maintenance cost for a temporary need?
