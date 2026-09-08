@@ -1,4 +1,4 @@
 interface:
   display_name: "Iterate from Docs"
-  short_description: "Reach the goal fast without drift or repository bloat"
-  default_prompt: "Use $iterate-from-docs to achieve this change's observable goal while keeping architecture, code, evidence, decisions, and documentation aligned and removing obsolete surfaces."
+  short_description: "Ship verified changes without code, dependency, or docs drift"
+  default_prompt: "Use $iterate-from-docs to deliver this change as one verified slice. Reconcile instructions, docs, runtime behavior, dependencies, consumers, and Git evidence; coordinate parallel agents only for independent work; update the owning code, tests, and docs; and remove obsolete surfaces."
