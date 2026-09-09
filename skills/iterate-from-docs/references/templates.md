@@ -8,6 +8,7 @@ Read only the template needed for the current task. Keep working briefs outside 
 - [Instruction scope map](#instruction-scope-map)
 - [Brownfield baseline](#brownfield-baseline)
 - [Iteration brief](#iteration-brief)
+- [Parallel work map](#parallel-work-map)
 - [Decision record](#decision-record)
 - [Removal ledger](#removal-ledger)
 - [Validation matrix](#validation-matrix)
@@ -105,6 +106,37 @@ Record the compatibility policy, release status, and real consumers for the slic
 ## Done
 
 <Behavior works through the real entry, stale references are absent, and selected checks pass.>
+```
+
+## Parallel work map
+
+Use this only when multiple agents have non-obvious dependencies, write ownership, or integration order.
+
+```markdown
+# Parallel work: <change>
+
+- Base commit: <full revision>
+- Branch and worktree state: <current branch, worktrees, staged/unstaged/untracked paths>
+- User-owned baseline: <dirty paths plus relevant original hunks or content hashes>
+- Integration owner: <parent agent>
+- Write topology: <shared checkout with disjoint paths / isolated worktrees>
+
+| Task | Depends on | Owner | Read scope | Exclusive write scope | Validation | Delivery |
+|---|---|---|---|---|---|---|
+| <bounded outcome> | <task or none> | <agent> | <paths/docs> | <paths or read-only> | `<command>` | <diff/commit/receipt> |
+
+## Worker brief: <task>
+
+- Goal: <observable result>
+- Base: <revision and prerequisite results>
+- Applicable instructions: <root-to-leaf chain>
+- Read scope: <paths and sources>
+- Exclusive write scope: <paths or read-only>
+- Do not modify: <shared contracts, user changes, other owners>
+- Git boundary: <prohibited operations or authorized branch/worktree actions>
+- Validation: <focused commands and expected evidence>
+- Stop and report when: <contract conflict, overlap, missing authority, or blocker>
+- Return: <changed files, result, checks, assumptions, risks, and unresolved items>
 ```
 
 ## Decision record
